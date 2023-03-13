@@ -14,8 +14,8 @@ import os
 
 DAYSBEHIND = 90
 DAYEND = 0
-OWNED = []
-CASH = 3000
+# OWNED = []
+# CASH = 3000
 
 def identifyStocks():
     print("Identifying stocks...")
@@ -102,36 +102,10 @@ def amznTest():
     print(readyToBuy)
     return readyToBuy
     
-def currentValue():
-
-
-def simulator():
-    if os.path.isfile('./owned.csv'):
-        os.remove('./owned.csv')
-    DAYSBEHIND = DAYSBEHIND + 220
-    DAYEND = DAYEND + 220
-    i = 220
-    while i > 0:
-        viable = identifyStocks()
-        for i in viable:
-            if CASH >= i[1]:
-               if not os.path.isfile('./owned.csv'):
-                   with open('./owned.csv', 'w', newline='') as createOwned:
-                       writer = csv.writer(createOwned)
-                       writer.writerow(["Ticker", "Shares"])
-                       writer.writerow(i[0], i[1], 1)
-               else:
-                   with open('./owned.csv', 'r', newline='') as ownedFile:
-                       writer = csv.writer(ownedFile)
-                       writer.writerow([i[0], "Shares"])
-                   
-                   
-                
-        DAYSBEHIND = DAYSBEHIND - 1
-        DAYEND = DAYEND - 1
-        i = i - 1
-    currentValue()
+# def currentValue():
 
 if __name__ == "__main__":
     # viable = identifyStocks()
-    simulator()
+    # simulator()
+    viable = identifyStocks()
+    print(viable)
