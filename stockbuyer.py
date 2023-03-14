@@ -10,3 +10,4 @@ import os
 
 def buy():
     # Buy here
+    print("Stock buyer function will be made soon")

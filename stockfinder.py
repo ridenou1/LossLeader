@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 import csv
 import pandas as pd
 import os
+from multiprocessing import Pool
+import numpy as np
 
 # NEEDED FEATURES 3/13/2023:
 # - Save Date of Found Stock
@@ -19,13 +21,17 @@ DAYEND = 0
 
 def identifyStocks():
     print("Identifying stocks...")
-    stocks = csvSearcher('demo.csv')
-    # stocks = csvSearcher('fortune.csv')
-    # print(stocks)
+    # Possible multiprocessing here?
+    # with Pool(processes=4) as pool:
+    demo = csvSearcher('demo.csv')
+    # fortune = csvSearcher('fortune.csv')
+
+    stocks = demo # Bypasses concatenation for multiprocessing
+    # stocks = np.unique(np.concatenate((np.array(demo), np.array(fortune))))
     viable = []
     for i in stocks:
         # print(i + '\n')
-        print("\rPrice averaging " + str(i[0]) + "...", end="\r")
+        print("\rPrice averaging " + str(i[0]) + "...                               ", end="\r")
         average = averageFinder(i[0])
         percent = 100 - ((i[1] / average) * 100)
         # print(str(i[0]) + " Percent - " + str(percent))
@@ -38,7 +44,7 @@ def averageFinder(ticker):
     tick = yf.Ticker(ticker)
     start_date = (datetime.now() - timedelta(days=DAYSBEHIND)).strftime('%Y-%m-%d')
     end_date = (datetime.now() - timedelta(days=(DAYEND + 2))).strftime('%Y-%m-%d')
-    print(end_date)
+    # print(end_date)
     ticker_hist = tick.history(start=start_date, end=end_date)
     ticker_hist.to_string()
     datecount = 0
