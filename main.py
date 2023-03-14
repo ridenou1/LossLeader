@@ -1,10 +1,34 @@
-import yfinance as yf
-import pendulum
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
-import csv
-import pandas as pd
 import os
+
+try:
+    import yfinance as yf
+except ImportError:
+    os.system("python3 -m pip install --upgrade yfinance")
+
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    os.system("python3 -m pip install --upgrade matplotlib")
+
+try:
+    import pendulum
+except ImportError:
+    os.system("python3 -m pip install --upgrade pendulum")
+
+try:
+    from datetime import datetime, timedelta
+except ImportError:
+    os.system("python3 -m pip install --upgrade datetime")
+
+try:
+    import csv
+except ImportError:
+    os.system("python3 -m pip install --upgrade csv")
+
+try:
+    import pandas as pd
+except ImportError:
+    os.system("python3 -m pip install --upgrade pandas")
 
 import simulator
 import stockbuyer
