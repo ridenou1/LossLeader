@@ -17,10 +17,10 @@ except ImportError:
 # except ImportError:
 #     os.system("python3 -m pip install --upgrade pendulum")
 
-# try:
-#     from datetime import datetime, timedelta
-# except ImportError:
-#     os.system("python3 -m pip install --upgrade datetime")
+try:
+    from datetime import datetime, timedelta
+except ImportError:
+    os.system("python3 -m pip install --upgrade datetime")
 
 # try:
 #     import pandas as pd
@@ -53,9 +53,16 @@ def database_test():
         for row in table:
             print(row[2])
     con.commit()
-    
+
+def database_connection():
+    conn = sl.connect('lossleader.db')
+    with conn:
+        print("Database connected successfully...")
+    return conn
 
 if __name__ == "__main__":
     # Runs simulator by default first
-    simulator.simulator()
+    conn = database_connection()
+    simulator.simulator(conn)
+    conn.commit()
     # main()

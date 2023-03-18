@@ -20,15 +20,37 @@ def sql_buy(con, tickdata, price):
         con.executemany(si, data)
     return
 
-def sql_sell():
+def sql_sell(con):
     print("\rIncorporate sell algorithm later...", end="\r")
+    current_table = con.execute("SELECT * FROM CURRENT")
+    portfolio_table = con.execute("SELECT * FROM PORTFOLIO")
+    for row in current_table:
+        print(row[1])
+    print("\n Finish current, start portfolio")
+    for row in portfolio_table:
+        print(row)
+    print("\n Finish portfolio")
+    max_differential = 0
+    max_quantity = 0
+    max_stock = "AAAAAAA"
+    for a in current_table:
+        for o in portfolio_table:
+            if a[0] == o[0]:
+                differential = o[1] / a[1]
+                if differential > max_differential:
+                    max_differential = differential
+                    max_quantity = o[2]
+                    max_stock = a[0]
 
-def fetch_current(con):
-    con.execute("DROP TABLE IF EXISTS CURRENT")
-    con.execute("""CREATE TABLE CURRENT(tick TEXT, old REAL, quantity INTEGER, current REAL, difference REAL);""")
+    print("Max diff " + str(max_differential))
+                
+    return 0
+
+def fetch_current(con, tickdata):
+    con.execute()
     
-
 if __name__ == "__main__":
     con = sl.connect('lossleader.db')
-    fetch_current(con)
-    con.commit()
+    # sql_sell(con)
+    # fetch_current(con)
+    # con.commit()

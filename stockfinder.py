@@ -1,12 +1,13 @@
 import yfinance as yf
 # import pendulum
 # import matplotlib.pyplot as plt
-# from datetime import datetime, timedelta
+from datetime import datetime, timedelta
 import csv
 import pandas as pd
-# import os
+import os
 # from multiprocessing import Pool
 import numpy as np
+import sqlite3 as sl
 
 # NEEDED FEATURES 3/13/2023:
 # - Save Date of Found Stock
@@ -17,7 +18,7 @@ import numpy as np
 DAYSBEHIND = 90
 DAYEND = 0
 
-def identifyStocks():
+def identifyStocks(con):
     print("\rIdentifying stocks...", end="\r")
     # Possible multiprocessing here?
     # with Pool(processes=4) as pool:
@@ -33,6 +34,12 @@ def identifyStocks():
         percent = 100 - ((i[1] / average) * 100)
         if percent >= 5:
             viable.append([i[0], i[1]])
+    print("IdentifyStocks connected successfully.")
+    con.execute("DROP TABLE IF EXISTS CURRENT")
+    con.execute("""CREATE TABLE CURRENT(tick TEXT, price REAL);""")
+    si = 'INSERT OR REPLACE INTO CURRENT (tick, price) values(?, ?)'
+    con.executemany(si, viable)
+    con.commit()
     return viable
 
 def averageFinder(ticker):
@@ -75,5 +82,6 @@ def csvSearcher(filename):
     return stocks
 
 if __name__ == "__main__":
-    viable = identifyStocks()
+    con = sl.connect('lossleader.db')
+    viable = identifyStocks(con)
     print(viable)
