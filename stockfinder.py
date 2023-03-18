@@ -81,10 +81,6 @@ def csvSearcher(filename):
                 stocks.append([ticker,lowestHigh])
     return stocks
 
-
-    # print(amzn_hist)
-    return
-
 def amznTest():
     amzn = yf.Ticker("amzn")
     start_date = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
@@ -111,7 +107,5 @@ def amznTest():
 # def currentValue():
 
 if __name__ == "__main__":
-    # viable = identifyStocks()
-    # simulator()
     viable = identifyStocks()
     print(viable)
