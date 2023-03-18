@@ -86,6 +86,29 @@ def simulator_csv(DAYSBEHIND, DAYEND, CASH, OWNED):
 #             print(row[2])
 #     con.close()
 
+# def sql_buy(con, tickdata, price):
+#     current_tick = tickdata[0]
+#     tick_table = con.execute("SELECT * FROM PORTFOLIO WHERE TICK=\'" + str(current_tick) + "\'")
+    
+#     # This will either run once or nonce, depending on if the tick exists in the table
+#     found = 0
+#     for row in tick_table:
+#         # print("Enters despite nothing, row content " + str(row))
+#         found = 1
+#         exist_price = row[1]
+#         exist_count = row[2]
+#         new_count = exist_count + 1
+#         new_price = ((exist_price * exist_count) + price) / new_count
+#         con.execute("UPDATE PORTFOLIO SET price=" + str(new_price) + ", quantity=" + str(new_count) + " where tick=\'" + current_tick + "\';")
+        
+#     if found == 0:
+#         si = 'INSERT INTO PORTFOLIO (tick, price, quantity) values(?, ?, ?)'
+#         data = [(current_tick, price, 1)]
+#         con.executemany(si, data)
+#     return
+
+
+
 def simulator_sqlite(DAYSBEHIND, DAYEND, CASH, OWNED):
     DAYSBEHIND = DAYSBEHIND + 220
     DAYEND = DAYEND + 220
@@ -100,31 +123,19 @@ def simulator_sqlite(DAYSBEHIND, DAYEND, CASH, OWNED):
         for tickdata in viable:
             price = tickdata[1]
             if CASH >= price:
-                current_tick = tickdata[0]
-                tick_table = con.execute("SELECT * FROM PORTFOLIO WHERE TICK=\'" + str(current_tick) + "\'")
-                
-                # This will either run once or nonce, depending on if the tick exists in the table
-                found = 0
-                for row in tick_table:
-                    print("Enters despite nothing")
-                    found = 1
-                    exist_price = row[1]
-                    exist_count = row[2]
-                    new_count = exist_price + 1
-                    new_price = ((exist_price * exist_count) + price) / new_count
-                    con.execute("UPDATE PORTFOLIO SET price=" + str(new_price) + ", quantity=" + str(new_count) + " where tick=\'" + current_tick + "\';")
-                    
-                if found == 0:
-                    si = 'INSERT INTO PORTFOLIO (tick, price, quantity) values(?, ?, ?)'
-                    data = [(current_tick, price, 1)]
-                    con.executemany(si, data)
+                stockbuyer.sql_buy(con, tickdata, price)
                 CASH = CASH - price
             else:
-                print("Incorporate sell algorithm later...")
+                # Incomplete
+                stockbuyer.sql_sell()
 
                 
         i = i - 1
-    con.close()
+    # print("\n\nOutput check:")
+    # table = con.execute("SELECT * FROM PORTFOLIO")
+    # for row in table:
+    #     print(row)
+    con.commit()
 
 
 if __name__ == "__main__":

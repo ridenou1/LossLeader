@@ -20,7 +20,7 @@ DAYEND = 0
 # CASH = 3000
 
 def identifyStocks():
-    print("Identifying stocks...")
+    print("\rIdentifying stocks...", end="\r")
     # Possible multiprocessing here?
     # with Pool(processes=4) as pool:
     demo = csvSearcher('demo.csv')

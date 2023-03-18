@@ -60,16 +60,16 @@ def database_test():
         table = con.execute("SELECT * FROM PORTFOLIO WHERE tick=\'GME\'")
         for row in table:
             print(row[2])
-    con.close()
+    con.commit()
     
 
 if __name__ == "__main__":
     # Runs simulator by default first
     simulator.simulator()
-    con = sl.connect('lossleader.db')
-    with con:
-        print("Connection success")
-        table = con.execute("SELECT * FROM PORTFOLIO")
-        for row in table:
-            print(row)
+    # con = sl.connect('lossleader.db')
+    # with con:
+    #     print("Connection success")
+    #     table = con.execute("SELECT * FROM PORTFOLIO")
+    #     for row in table:
+    #         print(row)
     # main()
