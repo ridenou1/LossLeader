@@ -7,40 +7,32 @@ try:
 except ImportError:
     os.system("python3 -m pip install --upgrade yfinance")
 
-try:
-    import matplotlib.pyplot as plt
-except ImportError:
-    os.system("python3 -m pip install --upgrade matplotlib")
+# try:
+#     import matplotlib.pyplot as plt
+# except ImportError:
+#     os.system("python3 -m pip install --upgrade matplotlib")
 
-try:
-    import pendulum
-except ImportError:
-    os.system("python3 -m pip install --upgrade pendulum")
+# try:
+#     import pendulum
+# except ImportError:
+#     os.system("python3 -m pip install --upgrade pendulum")
 
-try:
-    from datetime import datetime, timedelta
-except ImportError:
-    os.system("python3 -m pip install --upgrade datetime")
+# try:
+#     from datetime import datetime, timedelta
+# except ImportError:
+#     os.system("python3 -m pip install --upgrade datetime")
 
-try:
-    import csv
-except ImportError:
-    os.system("python3 -m pip install --upgrade csv")
-
-try:
-    import pandas as pd
-except ImportError:
-    os.system("python3 -m pip install --upgrade pandas")
+# try:
+#     import pandas as pd
+# except ImportError:
+#     os.system("python3 -m pip install --upgrade pandas")
 
 try:
     import sqlite3 as sl
 except ImportError:
     os.system("python3 -m pip install --upgrade sqlite3")
 
-# requires simulator later on
 import simulator
-# import stockbuyer
-# import stockfinder
 
 def main():
     print("Enters main")
@@ -66,10 +58,4 @@ def database_test():
 if __name__ == "__main__":
     # Runs simulator by default first
     simulator.simulator()
-    # con = sl.connect('lossleader.db')
-    # with con:
-    #     print("Connection success")
-    #     table = con.execute("SELECT * FROM PORTFOLIO")
-    #     for row in table:
-    #         print(row)
     # main()

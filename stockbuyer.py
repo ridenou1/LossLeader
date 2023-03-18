@@ -1,12 +1,3 @@
-# Should eventually hold content currently in simulator
-
-# import yfinance as yf
-# import pendulum
-# import matplotlib.pyplot as plt
-# from datetime import datetime, timedelta
-# import csv
-# import pandas as pd
-# import os
 import sqlite3 as sl
 
 def sql_buy(con, tickdata, price):
@@ -16,7 +7,6 @@ def sql_buy(con, tickdata, price):
     # This will either run once or nonce, depending on if the tick exists in the table
     found = 0
     for row in tick_table:
-        # print("Enters despite nothing, row content " + str(row))
         found = 1
         exist_price = row[1]
         exist_count = row[2]
@@ -32,3 +22,13 @@ def sql_buy(con, tickdata, price):
 
 def sql_sell():
     print("\rIncorporate sell algorithm later...", end="\r")
+
+def fetch_current(con):
+    con.execute("DROP TABLE IF EXISTS CURRENT")
+    con.execute("""CREATE TABLE CURRENT(tick TEXT, old REAL, quantity INTEGER, current REAL, difference REAL);""")
+    
+
+if __name__ == "__main__":
+    con = sl.connect('lossleader.db')
+    fetch_current(con)
+    con.commit()

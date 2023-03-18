@@ -1,11 +1,11 @@
 import yfinance as yf
-import pendulum
-import matplotlib.pyplot as plt
-from datetime import datetime, timedelta
+# import pendulum
+# import matplotlib.pyplot as plt
+# from datetime import datetime, timedelta
 import csv
 import pandas as pd
-import os
-from multiprocessing import Pool
+# import os
+# from multiprocessing import Pool
 import numpy as np
 
 # NEEDED FEATURES 3/13/2023:
@@ -16,8 +16,6 @@ import numpy as np
 
 DAYSBEHIND = 90
 DAYEND = 0
-# OWNED = []
-# CASH = 3000
 
 def identifyStocks():
     print("\rIdentifying stocks...", end="\r")
@@ -30,21 +28,17 @@ def identifyStocks():
     # stocks = np.unique(np.concatenate((np.array(demo), np.array(fortune))))
     viable = []
     for i in stocks:
-        # print(i + '\n')
         print("\rPrice averaging " + str(i[0]) + "...                               ", end="\r")
         average = averageFinder(i[0])
         percent = 100 - ((i[1] / average) * 100)
-        # print(str(i[0]) + " Percent - " + str(percent))
         if percent >= 5:
             viable.append([i[0], i[1]])
-    # print(viable)
     return viable
 
 def averageFinder(ticker):
     tick = yf.Ticker(ticker)
     start_date = (datetime.now() - timedelta(days=DAYSBEHIND)).strftime('%Y-%m-%d')
     end_date = (datetime.now() - timedelta(days=(DAYEND + 2))).strftime('%Y-%m-%d')
-    # print(end_date)
     ticker_hist = tick.history(start=start_date, end=end_date)
     ticker_hist.to_string()
     datecount = 0
@@ -59,7 +53,6 @@ def csvSearcher(filename):
     with open(filename, newline='') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            # print(row['Ticker'])
             ticker = row['Ticker']
             print("\rEvaluating " + str(filename) + ", ticker " + str(ticker) + "...", end="\r")
             tick = yf.Ticker(ticker)
@@ -80,31 +73,6 @@ def csvSearcher(filename):
             if lowHighDate <= 1:
                 stocks.append([ticker,lowestHigh])
     return stocks
-
-def amznTest():
-    amzn = yf.Ticker("amzn")
-    start_date = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d')
-    end_date = datetime.now().strftime('%Y-%m-%d')
-    amzn_hist = amzn.history(start=start_date, end=end_date)
-    amzn_hist.to_string()
-    lowestHigh = 99999 * 99999
-    datecount = 0
-    lowHighDate = DAYSBEHIND * 2
-    for i in amzn_hist["High"]:
-        datecount = datecount + 1
-    for i in amzn_hist["High"]:
-        datecount = datecount - 1
-        if i < lowestHigh:
-            lowHighDate = datecount
-            lowestHigh = i
-    if lowHighDate <= 1:
-        readyToBuy = 1
-    else:
-        readyToBuy = 0
-    print(readyToBuy)
-    return readyToBuy
-    
-# def currentValue():
 
 if __name__ == "__main__":
     viable = identifyStocks()
