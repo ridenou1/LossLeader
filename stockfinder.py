@@ -18,6 +18,41 @@ import sqlite3 as sl
 DAYSBEHIND = 90
 DAYEND = 0
 
+def identifySell(con, simulator_mode, days_ago):
+    print("\rIdentifying stocks to sell...", end="\r")
+    demo = csvSearcher('demo.csv')
+    stocks = demo
+    viable = []
+    for i in stocks:
+        print("\rLocating current value for " + str(i[0]) + "...                               ", end="\r")
+
+        
+def csvSellSearcher(filename):
+    stocks = []
+    with open(filename, newline='') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            ticker = row['Ticker']
+            print("\rEvaluating " + str(filename) + ", ticker " + str(ticker) + "...", end="\r")
+            tick = yf.Ticker(ticker)
+            start_date = (datetime.now() - timedelta(days=DAYSBEHIND)).strftime('%Y-%m-%d')
+            end_date = (datetime.now() - timedelta(days=DAYEND)).strftime('%Y-%m-%d')
+            ticker_hist = tick.history(start=start_date, end=end_date)
+            ticker_hist.to_string()
+            lowestHigh = 99999 * 99999
+            datecount = 0
+            lowHighDate = DAYSBEHIND * 2
+            for i in ticker_hist["High"]:
+                datecount = datecount + 1
+            for i in ticker_hist["High"]:
+                datecount = datecount - 1
+                if i < lowestHigh:
+                    lowHighDate = datecount
+                    lowestHigh = i
+            if lowHighDate <= 1:
+                stocks.append([ticker,lowestHigh])
+    return stocks
+
 def identifyStocks(con):
     print("\rIdentifying stocks...", end="\r")
     # Possible multiprocessing here?
@@ -37,7 +72,8 @@ def identifyStocks(con):
     print("IdentifyStocks connected successfully.")
     con.execute("DROP TABLE IF EXISTS CURRENT")
     con.execute("""CREATE TABLE CURRENT(tick TEXT, price REAL);""")
-    si = 'INSERT OR REPLACE INTO CURRENT (tick, price) values(?, ?)'
+    # si = 'INSERT OR REPLACE INTO CURRENT (tick, price) values(?, ?)'
+    si = 'INSERT INTO CURRENT (tick, price) values(?, ?)'
     con.executemany(si, viable)
     con.commit()
     return viable

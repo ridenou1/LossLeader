@@ -22,7 +22,7 @@ def sql_buy(con, tickdata, price):
 
 def sql_sell(con):
     print("\rIncorporate sell algorithm later...", end="\r")
-    current_table = con.execute("SELECT * FROM CURRENT")
+    current_table = con.execute("SELECT * FROM CURRENTSELL")
     portfolio_table = con.execute("SELECT * FROM PORTFOLIO")
     for row in current_table:
         print(row[1])
