@@ -7,25 +7,25 @@ try:
 except ImportError:
     os.system("python3 -m pip install --upgrade yfinance")
 
-# try:
-#     import matplotlib.pyplot as plt
-# except ImportError:
-#     os.system("python3 -m pip install --upgrade matplotlib")
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    os.system("python3 -m pip install --upgrade matplotlib")
 
-# try:
-#     import pendulum
-# except ImportError:
-#     os.system("python3 -m pip install --upgrade pendulum")
+try:
+    import pendulum
+except ImportError:
+    os.system("python3 -m pip install --upgrade pendulum")
 
 try:
     from datetime import datetime, timedelta
 except ImportError:
     os.system("python3 -m pip install --upgrade datetime")
 
-# try:
-#     import pandas as pd
-# except ImportError:
-#     os.system("python3 -m pip install --upgrade pandas")
+try:
+    import pandas as pd
+except ImportError:
+    os.system("python3 -m pip install --upgrade pandas")
 
 try:
     import sqlite3 as sl
@@ -33,6 +33,7 @@ except ImportError:
     os.system("python3 -m pip install --upgrade sqlite3")
 
 import simulator
+import overhaul
 
 def main():
     print("Enters main")
@@ -40,7 +41,13 @@ def main():
     # Main will eventually hold calls to algorithm code
 
 def database_test():
-    con = sl.connect('lossleader.db')
+    # Connect to sqlite tables
+    database = 'lossleader.db'
+    try:
+        con = sl.connect(database)
+    except:
+        print("Connection to database " + database + " failed.")
+
     with con:
         print("Database connected successfully")
         con.execute("DROP TABLE IF EXISTS PORTFOLIO")
@@ -55,14 +62,23 @@ def database_test():
     con.commit()
 
 def database_connection():
-    conn = sl.connect('lossleader.db')
+    # Connect to sqlite tables
+    database = 'lossleader.db'
+    try:
+        conn = sl.connect(database)
+    except:
+        print("Connection to database " + database + " failed.")
     with conn:
         print("Database connected successfully...")
     return conn
 
 if __name__ == "__main__":
     # Runs simulator by default first
-    conn = database_connection()
-    simulator.simulator(conn)
-    conn.commit()
+    # date_to_search = (datetime.now() - timedelta(days=1))
+    # print(date_to_search.weekday())
+    # print(date_to_search)
+    # conn = database_connection()
+    # simulator.simulator(conn)
+    # conn.commit()
     # main()
+    overhaul.main()
