@@ -3,7 +3,7 @@ import csv
 def identifyList():
     stocks = []
     # Default is fortune 500
-    filename = 'demo.csv'
+    filename = 'fortune.csv'
     with open(filename, newline='') as file:
         reader = csv.DictReader(file)
         for row in reader:
