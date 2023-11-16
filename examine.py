@@ -3,9 +3,6 @@ import os
 import yfinance as yf
 import datetime as dt
 import sqlite3 as sl
-# import threading
-# import multiprocessing
-# import concurrent.futures
 
 import csvreader
 
@@ -20,10 +17,11 @@ class Bank:
         self.balance = balance  # Cash balance to start
         self.held = held        # Stock portfolio
 
-eligible = []
 account = Bank(1000000, [])
 
 def find_gains(st_item):
+    global account
+
     # Initialization
     today = dt.date.today()
     start = today - dt.timedelta(3*30)  # 3 months ago
@@ -32,27 +30,45 @@ def find_gains(st_item):
     current_stock = stock_name.history(start=start, end=today, interval="1d")
     count = 0
     new = 0
-    previous = 0
+    broken = 0
 
     # Iterate for the current value every 3 months
     for j in current_stock['Close']:
         if count >= 1:
-            # day_gain = ((j / previous) * 100) - 100
-            day_gain = ((j / new) * 100) - 100
+            day_loss = ((j / new) * 100) - 100
 
-            if day_gain >= 10:
-                print("Day gain on " + st_item.ti + " found to exceed 10%: " + str(round(day_gain, 2)) + "%")
+            total_loss = ((j / st_item.pp) * 100) - 100
+
+            # If it loses more than 5% in a day, it is time to sell
+            if day_loss <= -5:
+                print("Day losses on " + st_item.ti + " found to exceed 5%: " + str(round(day_loss, 2)) + "%")
+                account.balance += st_item.pp + j
+                account.held.remove(st_item)
+                print(st_item.ti + " sold! $" + str(round(st_item.pp, 2)) + " -> $" + str(round((j), 2)) + ", Gains: $" + str(round(j - st_item.pp, 2)))
+                broken = 1
+                break
+            
+            # If it has lost more then 10% overall, it is time to sell
+            if total_loss <= -10:
+                print("Total losses on " + st_item.ti + " found to exceed 10%: " + str(round(day_loss, 2)) + "%")
+                account.balance += st_item.pp + j
+                account.held.remove(st_item)
+                print(st_item.ti + " sold to prevent further losses. $" + str(round(st_item.pp, 2)) + " -> $" + str(round((j), 2)) + ", Gains: $" + str(round(j - st_item.pp, 2)))
+                broken = 1
+                break
+
+
         count += 1  
-        # previous = j
         new = j
-    st_item.gain = round(new - st_item.pp, 2)
+
+    if broken == 0:
+        st_item.gain = round(new - st_item.pp, 2)
     percent = round(((new / st_item.pp) * 100) - 100, 2)
     print("Stock " + str(st_item.ti) + " Gains $" + str(st_item.gain) + " - " + str(percent) + "%")
 
 
 
 def find_minimum(st_item):
-    # global eligble
     global account
     # Pull the stock name
     stock_name = yf.Ticker(st_item)
@@ -99,7 +115,6 @@ def run_days():
         find_minimum(item)
 
     # Find the gains for each value in the list
-    # for i in eligible:
     for i in account.held:
         find_gains(i)
 
