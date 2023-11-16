@@ -10,9 +10,10 @@ import sqlite3 as sl
 import csvreader
 
 class Stock:
-    def __init__(self, pp, ti):
-        self.pp = pp    # Simulator decision price
-        self.ti = ti    # Ticker
+    def __init__(self, pp, ti, gain):
+        self.pp = pp        # Simulator decision price
+        self.ti = ti        # Ticker
+        self.gain = gain    # Amount gain/loss
 
 eligible = []
 
@@ -30,7 +31,9 @@ def find_gains(st_item):
         #     original = j
         count += 1   
         new = j
-    print("Stock " + str(st_item.ti) + " Gains " + str(new - st_item.pp))
+    st_item.gain = round(new - st_item.pp, 2)
+    percent = round(((new / st_item.pp) * 100) - 100, 2)
+    print("Stock " + str(st_item.ti) + " Gains $" + str(st_item.gain) + " - " + str(percent) + "%")
 
 def find_minimum(st_item):
     global eligble
@@ -61,7 +64,7 @@ def find_minimum(st_item):
     # The most recent price (as of 3 months ago) is the lowest price in the last 3 months    
     if lowest == previous:
         print("Stock name " + str(st_item) + " end date " + str(first_end))
-        eligible.append(Stock(previous, st_item))
+        eligible.append(Stock(previous, st_item, 0))
 
     # print(hist)
 
